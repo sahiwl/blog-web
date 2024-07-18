@@ -1,19 +1,36 @@
 import { SignupInput } from "@sahiwl/medium-common"
 import { ChangeEvent, useState } from "react"
-import { Link } from "react-router-dom"
+import { Link, useNavigate } from "react-router-dom"
+import { BACKEND_URL} from "../config"
+import axios from "axios"
 
 //trpc - for extremely strict types
 export const Auth = ({ type }: { type: "signup" | "signin" }) => {
+    const navigate = useNavigate();
     const [postInputs, setPostInputs] = useState<SignupInput>({
         name: "",
         username: "",
         password: ""
     })
 
+    async function sendRequest(){
+        try{
+            const response = await axios.post(`${BACKEND_URL}/api/v1/user/${type === "signup" ? "signup" : "signin"}`, postInputs);
+            const jwt = response.data;
+            localStorage.setItem("token", jwt); 
+            navigate("/blogs")
+        } catch(e){
+            //alert the user here that the request failed 
+            alert("Error while signing up");
+            console.log("Error detected: " + e);
+            
+        }
+    }
+
     return (
         <>
             <div className="h-screen flex justify-center flex-col">
-                {/* {JSON.stringify(postInputs)} */}
+                {JSON.stringify(postInputs)}
                 <div className="flex justify-center">
                     <div className="">
                         <div className="px-10">
@@ -27,12 +44,12 @@ export const Auth = ({ type }: { type: "signup" | "signin" }) => {
                         </div>
                         <div className="pt-8">
 
-                            <LabelledInput label="Name" placeholder="Sahil Kr.." onChange={(e) => {
+                            {type=== "signup"? <LabelledInput label="Name" placeholder="Sahil Kr.." onChange={(e) => {
                                 setPostInputs({
                                     ...postInputs,
                                     name: e.target.value
                                 })
-                            }} />
+                            }} />: null} 
                             <LabelledInput label="Username" placeholder="Sahilkr@gmail.com" onChange={(e) => {
                                 setPostInputs({
                                     ...postInputs,
@@ -45,7 +62,7 @@ export const Auth = ({ type }: { type: "signup" | "signin" }) => {
                                     password: e.target.value
                                 })
                             }} />
-                            <button type="button" className="w-full mt-8 text-white bg-gray-800 hover:bg-gray-900 focus:outline-none focus:ring-4 focus:ring-gray-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-gray-800 dark:hover:bg-gray-700 dark:focus:ring-gray-700 dark:border-gray-700">{type === "signin" ? "Sign in" : "Sign up"  }</button>
+                            <button onClick={sendRequest} type="button" className="w-full mt-8 text-white bg-gray-800 hover:bg-gray-900 focus:outline-none focus:ring-4 focus:ring-gray-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-gray-800 dark:hover:bg-gray-700 dark:focus:ring-gray-700 dark:border-gray-700">{type === "signin" ? "Sign in" : "Sign up"  }</button>
                         </div>
                     </div>
                 </div>
