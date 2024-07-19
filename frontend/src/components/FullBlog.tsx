@@ -1,10 +1,10 @@
 import { Blog } from "../hooks"
 import { Avatar } from "../pages/BlogCard"
-import { Appbar } from "./Appbar"
+import { Navbar } from "./Navbar"
 
 export const FullBlog = ({ blog } :{blog: Blog}) => {
     return <div className="">
-        <Appbar />
+        <Navbar />
         <div className="flex justify-center">
             <div className="grid grid-cols-12 px-10 w-full pt-200 max-w-screen-xl pt-12">
                 <div className="col-span-8">
@@ -12,7 +12,7 @@ export const FullBlog = ({ blog } :{blog: Blog}) => {
                         {blog.title}
                     </div>
                     <div className="text-slate-500 pt-2">
-                        Post on 2nd December 2023
+                        Posted recently
                     </div>
                     <div className="pt-4">
                         {blog.content}

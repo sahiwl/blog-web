@@ -7,17 +7,22 @@ import axios from "axios"
 //trpc - for extremely strict types
 export const Auth = ({ type }: { type: "signup" | "signin" }) => {
     const navigate = useNavigate();
+
     const [postInputs, setPostInputs] = useState<SignupInput>({
         name: "",
         username: "",
         password: ""
     })
-
+  
     async function sendRequest(){
         try{
             const response = await axios.post(`${BACKEND_URL}/api/v1/user/${type === "signup" ? "signup" : "signin"}`, postInputs);
             const jwt = response.data;
             localStorage.setItem("token", jwt); 
+            //@ts-ignore
+            localStorage.setItem("email",postInputs.username);
+            //@ts-ignore
+            localStorage.setItem("user",postInputs.name);
             navigate("/blogs")
         } catch(e){
             //alert the user here that the request failed 
@@ -30,7 +35,7 @@ export const Auth = ({ type }: { type: "signup" | "signin" }) => {
     return (
         <>
             <div className="h-screen flex justify-center flex-col">
-                {JSON.stringify(postInputs)}
+                {/* {JSON.stringify(postInputs)} */}
                 <div className="flex justify-center">
                     <div className="">
                         <div className="px-10">
@@ -38,25 +43,25 @@ export const Auth = ({ type }: { type: "signup" | "signin" }) => {
                                 Create an Account
                             </div>
                             <div className="text-slate-500">
-                                {type === "signin" ? "Don't have an account? " : "Already have an account?"}
+                                {type === "signin" ? "Don't have an account? " : "Already have an account? "}
                                 <Link className="pt-2 underline" to={type === "signin" ? "/signup" : "/signin"}>{type === "signin"? "Sign up" : "Sign in"}</Link>
                             </div>
                         </div>
                         <div className="pt-8">
 
-                            {type=== "signup"? <LabelledInput label="Name" placeholder="Sahil Kr.." onChange={(e) => {
+                            {type=== "signup"? <LabelledInput label="Name" placeholder="Enter your name" onChange={(e) => {
                                 setPostInputs({
                                     ...postInputs,
                                     name: e.target.value
                                 })
                             }} />: null} 
-                            <LabelledInput label="Username" placeholder="Sahilkr@gmail.com" onChange={(e) => {
+                            <LabelledInput label="Username" placeholder="Enter your email" onChange={(e) => {
                                 setPostInputs({
                                     ...postInputs,
-                                    username: e.target.value
+                                    username: e.target.value,
                                 })
                             }} />
-                            <LabelledInput label="password" placeholder="123456" onChange={(e) => {
+                            <LabelledInput label="password"  type="password" placeholder="Enter your password" onChange={(e) => {
                                 setPostInputs({
                                     ...postInputs,
                                     password: e.target.value

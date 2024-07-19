@@ -7,6 +7,9 @@ export default {
   ],
   theme: {
     extend: {},
+    fontFamily: {
+      Cormorant: ['Cormorant Variable', 'serif']
+    }
   },
   plugins: [],
 }
